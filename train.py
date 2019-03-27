@@ -122,9 +122,8 @@ def train(num_gpus, rank, group_name, output_directory, epochs, learning_rate,
                 reduced_loss = loss.item()
             loss.backward()
             optimizer.step()
-
-            print("{}:\t{:.9f}".format(iteration, reduced_loss))
             iteration += 1
+        print("{}:\t{:.9f}".format(iteration, reduced_loss))
         checkpoint_path = "{}/waveglow".format(output_directory)
         save_checkpoint(model, optimizer, learning_rate, iteration,
                         checkpoint_path)
