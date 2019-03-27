@@ -124,15 +124,10 @@ def train(num_gpus, rank, group_name, output_directory, epochs, learning_rate,
             optimizer.step()
 
             print("{}:\t{:.9f}".format(iteration, reduced_loss))
-
-            if (iteration % iters_per_checkpoint == 0):
-                if rank == 0:
-                    checkpoint_path = "{}/waveglow_{}".format(
-                        output_directory, iteration)
-                    save_checkpoint(model, optimizer, learning_rate, iteration,
-                                    checkpoint_path)
-
             iteration += 1
+        checkpoint_path = "{}/waveglow".format(output_directory)
+        save_checkpoint(model, optimizer, learning_rate, iteration,
+                        checkpoint_path)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
