@@ -91,8 +91,7 @@ def train(num_gpus, rank, group_name, output_directory, epochs, learning_rate,
     print("checkpoint path", checkpoint_path)
     model = warm_load_checkpoint(checkpoint_path)
     #model, optimizer, iteration = load_checkpoint(checkpoint_path, model, optimizer)
-        iteration += 1  # next iteration is iteration + 1
-
+    
     trainset = Mel2Samp(**data_config)
     # =====START: ADDED FOR DISTRIBUTED======
     train_sampler = DistributedSampler(trainset) if num_gpus > 1 else None
