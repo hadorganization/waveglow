@@ -91,7 +91,7 @@ def train(num_gpus, rank, group_name, output_directory, epochs, learning_rate,
     print("checkpoint path", checkpoint_path)
     #model = warm_load_checkpoint(checkpoint_path, model)
     model, optimizer, iteration = load_checkpoint(checkpoint_path, model, optimizer)
-    
+    iteration += 1
     trainset = Mel2Samp(**data_config)
     # =====START: ADDED FOR DISTRIBUTED======
     train_sampler = DistributedSampler(trainset) if num_gpus > 1 else None
@@ -129,11 +129,13 @@ def train(num_gpus, rank, group_name, output_directory, epochs, learning_rate,
                 reduced_loss = loss.item()
             loss.backward()
             optimizer.step()
+            if (iteration % iters_per_checkpoint == 0):
+                print("{}:\t{:.9f}".format(iteration, reduced_loss))
+                checkpoint_path = "{}/waveglow".format(output_directory)
+                save_checkpoint(model, optimizer, learning_rate, iteration,
+                                checkpoint_path)
             iteration += 1
-        print("{}:\t{:.9f}".format(iteration, reduced_loss))
-        checkpoint_path = "{}/waveglow".format(output_directory)
-        save_checkpoint(model, optimizer, learning_rate, iteration,
-                        checkpoint_path)
+        
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
