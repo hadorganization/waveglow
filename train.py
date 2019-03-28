@@ -89,8 +89,8 @@ def train(num_gpus, rank, group_name, output_directory, epochs, learning_rate,
     # Load checkpoint if one exists
     iteration = 0
     print("checkpoint path", checkpoint_path)
-    model = warm_load_checkpoint(checkpoint_path, model)
-    #model, optimizer, iteration = load_checkpoint(checkpoint_path, model, optimizer)
+    #model = warm_load_checkpoint(checkpoint_path, model)
+    model, optimizer, iteration = load_checkpoint(checkpoint_path, model, optimizer)
     
     trainset = Mel2Samp(**data_config)
     # =====START: ADDED FOR DISTRIBUTED======
