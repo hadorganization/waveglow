@@ -80,6 +80,7 @@ def train(num_gpus, rank, group_name, output_directory, epochs, learning_rate,
 
     # Load checkpoint if one exists
     iteration = 0
+    print("checkpoint path", checkpoint_path)
     if checkpoint_path != "":
         model, optimizer, iteration = load_checkpoint(checkpoint_path, model,
                                                       optimizer)
