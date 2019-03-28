@@ -38,6 +38,14 @@ from torch.utils.data import DataLoader
 from glow import WaveGlow, WaveGlowLoss
 from mel2samp import Mel2Samp
 
+def warm_load_checkpoint(checkpoint_path, model, optimizer):
+    assert os.path.isfile(checkpoint_path)
+    checkpoint_dict = torch.load(checkpoint_path, map_location='cpu')
+    model_for_loading = checkpoint_dict['model']
+    model.load_state_dict(model_for_loading.state_dict())
+    print("Loaded checkpoint '{}')" .format(checkpoint_path))
+    return model
+
 def load_checkpoint(checkpoint_path, model, optimizer):
     assert os.path.isfile(checkpoint_path)
     checkpoint_dict = torch.load(checkpoint_path, map_location='cpu')
@@ -81,9 +89,8 @@ def train(num_gpus, rank, group_name, output_directory, epochs, learning_rate,
     # Load checkpoint if one exists
     iteration = 0
     print("checkpoint path", checkpoint_path)
-    if checkpoint_path != "":
-        model, optimizer, iteration = load_checkpoint(checkpoint_path, model,
-                                                      optimizer)
+    model = warm_load_checkpoint(checkpoint_path)
+    #model, optimizer, iteration = load_checkpoint(checkpoint_path, model, optimizer)
         iteration += 1  # next iteration is iteration + 1
 
     trainset = Mel2Samp(**data_config)
